@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Categoria from './pages/Categoria';
 import Carrito from './pages/Carrito';
 import Registro from './pages/Registro';
 import Login from './pages/Login';
+import MetodoPago from './pages/MetodoPago';
 import { UserContext } from './context/UserContext';
 
 function App() {
@@ -50,6 +52,7 @@ function App() {
           <Route path="/cart" element={<Carrito />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/metodo-pago" element={<MetodoPago />} />
         </Routes>
       </div>
     </Router>
