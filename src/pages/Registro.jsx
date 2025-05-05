@@ -6,6 +6,7 @@ import { UserContext } from '../context/UserContext';
 const Registro = () => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('pass');
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -15,26 +16,30 @@ const Registro = () => {
     e.preventDefault();
     setError('');
     setMensaje('');
-    
+
     try {
-      // Llama al endpoint correcto según tu API
+      // Llama al endpoint de la API
       const res = await axios.post('http://localhost:5000/register', {
         name: nombre,
-        email: email
+        email: email,
+        password: password
       });
-      
+
       if (res.data.message) {
         setMensaje(res.data.message);
-        // Después de un registro exitoso, iniciamos sesión automáticamente
+        // Después de un registro exitoso, se inicia sesión automáticamente
         try {
-          const loginRes = await axios.post('http://localhost:5000/login', { email });
+          const loginRes = await axios.post('http://localhost:5000/login', {
+            email,
+            password 
+          });
           if (loginRes.data.id) {
             iniciarSesion(loginRes.data);
             setTimeout(() => navigate('/'), 2000); // Redirige al home luego de 2 segundos
           }
         } catch (loginErr) {
           console.error('Error al iniciar sesión automática:', loginErr);
-          setTimeout(() => navigate('/login'), 2000); // Si falla el login automático, redirigimos a login
+          setTimeout(() => navigate('/login'), 2000); // Si falla el login automático, se redirige a login
         }
       }
     } catch (err) {
@@ -65,6 +70,17 @@ const Registro = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Contraseña</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <small className="form-text text-muted">Por defecto es "pass" si no introduces nada.</small>
         </div>
         <button type="submit" className="btn btn-primary">Registrarse</button>
       </form>

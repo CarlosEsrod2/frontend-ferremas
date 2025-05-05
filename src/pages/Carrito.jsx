@@ -10,7 +10,7 @@ const Carrito = () => {
 
   const subtotal = carrito.reduce((acc, prod) => acc + prod.price * prod.cantidad, 0);
   
-  // Calculamos el descuento solo si el usuario está logueado
+  // Se calcula el descuento solo si el usuario está logueado
   const descuentoAplicado = usuario ? (subtotal * descuento / 100) : 0;
   const total = subtotal - descuentoAplicado;
 
