@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Categoria from './pages/Categoria';
 import Carrito from './pages/Carrito';
 import Registro from './pages/Registro';
 import Login from './pages/Login';
-import { CarritoProvider } from './context/CarritoContext';
-
+import { UserContext } from './context/UserContext';
 
 function App() {
+  const { usuario, cerrarSesion } = useContext(UserContext);
+
   return (
     <Router>
       <div className="container">
         <header className="bg-primary text-white p-3 mb-4">
           <div className="d-flex justify-content-between align-items-center">
-            <h1>Ferremas</h1>
-            <Link to="/cart" className="btn btn-light">🛒 Carrito</Link>
+            <Link to="/" className="text-white text-decoration-none">
+              <h1>Ferremas</h1>
+            </Link>
+            
+            <div className="d-flex align-items-center">
+              {usuario ? (
+                <div className="dropdown me-3">
+                  <button className="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Hola, {usuario.name}
+                  </button>
+                  <ul className="dropdown-menu" aria-labelledby="userDropdown">
+                    <li><button className="dropdown-item" onClick={cerrarSesion}>Cerrar sesión</button></li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="me-3">
+                  <Link to="/login" className="btn btn-light me-2">Ingresar</Link>
+                  <Link to="/registro" className="btn btn-outline-light">Registrarse</Link>
+                </div>
+              )}
+              
+              <Link to="/cart" className="btn btn-warning">
+                🛒 Carrito
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -51,7 +75,5 @@ const Home = () => (
     </div>
   </div>
 );
-
-//const Carrito = () => <div>Tu carrito está vacío.</div>;
 
 export default App;

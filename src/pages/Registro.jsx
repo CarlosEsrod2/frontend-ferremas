@@ -1,24 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from '../context/UserContext';
 
 const Registro = () => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [mensaje, setMensaje] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { iniciarSesion } = useContext(UserContext);
 
   const handleRegistro = async (e) => {
     e.preventDefault();
+    setError('');
+    setMensaje('');
+    
     try {
-      const res = await axios.post('http://localhost:5000/users/register', {
+      // Llama al endpoint correcto según tu API
+      const res = await axios.post('http://localhost:5000/register', {
         name: nombre,
         email: email
       });
-      setMensaje(res.data.message);
-      setTimeout(() => navigate('/login'), 2000); // Redirige a login luego de 2 segundos
-    } catch (error) {
-      setMensaje(error.response?.data?.message || 'Error al registrar usuario');
+      
+      if (res.data.message) {
+        setMensaje(res.data.message);
+        // Después de un registro exitoso, iniciamos sesión automáticamente
+        try {
+          const loginRes = await axios.post('http://localhost:5000/login', { email });
+          if (loginRes.data.id) {
+            iniciarSesion(loginRes.data);
+            setTimeout(() => navigate('/'), 2000); // Redirige al home luego de 2 segundos
+          }
+        } catch (loginErr) {
+          console.error('Error al iniciar sesión automática:', loginErr);
+          setTimeout(() => navigate('/login'), 2000); // Si falla el login automático, redirigimos a login
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al registrar usuario');
     }
   };
 
@@ -49,6 +69,7 @@ const Registro = () => {
         <button type="submit" className="btn btn-primary">Registrarse</button>
       </form>
       {mensaje && <div className="alert alert-info mt-3">{mensaje}</div>}
+      {error && <div className="alert alert-danger mt-3">{error}</div>}
     </div>
   );
 };

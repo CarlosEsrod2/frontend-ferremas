@@ -1,15 +1,13 @@
 // src/pages/Login.jsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { CarritoContext } from '../context/CarritoContext';
-import { useCarrito } from '../context/CarritoContext';
-import { CarritoProvider } from '../context/CarritoContext';
+import { UserContext } from '../context/UserContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const { setDescuento } = CarritoProvider();
+  const { iniciarSesion } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,11 +15,10 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:5000/login', { email });
 
-      if (response.data.success) {
-        // Aplicar descuento y almacenar el usuario en el contexto
-        setDescuento(response.data.descuento);
-        // Redirigir al carrito
-        navigate('/cart');
+      if (response.data.id) {
+        // Si la respuesta contiene un id de usuario, inicio exitoso
+        iniciarSesion(response.data); // Guardamos los datos del usuario en el contexto
+        navigate('/cart'); // Redirigir al carrito
       } else {
         setError('El correo electrónico no está registrado.');
       }
