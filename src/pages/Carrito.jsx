@@ -70,7 +70,7 @@ const Carrito = () => {
           
           <div className="d-flex justify-content-between">
             <button className="btn btn-secondary" onClick={vaciarCarrito}>Vaciar carrito</button>
-            <button className="btn btn-success">Finalizar compra</button>
+            <Link to="/metodo-pago" className="btn btn-success">Finalizar compra</Link>
           </div>
         </div>
       )}
