@@ -54,10 +54,11 @@ const Categoria = () => {
                                 />
                                 <div className="card-body">
                                     <h5 className="card-title">{producto.name}</h5>
-                                    <p className="card-text">${producto.price}</p>
+                                    <p className="card-text">${producto.price} CLP</p>
+                                    <p className="card-text">${producto.valor_dolar} USD</p>
                                     <motion.button
                                         whileTap={{ scale: 0.9 }}
-                                        whileHover={{ scale: 1.05 }}
+                                        whileHover={{ scale: 1.1 }}
                                         className="btn btn-primary"
                                         onClick={() => agregarAlCarrito(producto)}
                                     >
