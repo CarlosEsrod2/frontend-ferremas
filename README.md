@@ -48,7 +48,7 @@ src/
 1. Clona el repositorio:
    ```bash
    git clone https://github.com/CarlosEsrod2/frontend-ferremas.git
-   cd frontend
+   cd frontend-ferremas
    ```
 
 2. Instala las dependencias:
