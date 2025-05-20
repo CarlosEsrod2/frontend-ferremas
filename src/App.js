@@ -7,6 +7,7 @@ import Carrito from './pages/Carrito';
 import Registro from './pages/Registro';
 import Login from './pages/Login';
 import MetodoPago from './pages/MetodoPago';
+import PaymentResult from './pages/PaymentResult';
 import { UserContext } from './context/UserContext';
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/login" element={<Login />} />
           <Route path="/metodo-pago" element={<MetodoPago />} />
+          <Route path="/payment-result" element={<PaymentResult />} />
         </Routes>
       </div>
     </Router>

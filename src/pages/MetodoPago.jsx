@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { CarritoContext } from '../context/CarritoContext';
 import { UserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const MetodoPago = () => {
   const { carrito, vaciarCarrito } = useContext(CarritoContext);
@@ -11,6 +12,8 @@ const MetodoPago = () => {
   
   const [metodoPago, setMetodoPago] = useState(null);
   const [mostrarDatosTransferencia, setMostrarDatosTransferencia] = useState(false);
+  const [procesando, setProcesando] = useState(false);
+  const [error, setError] = useState('');
   
   const subtotal = carrito.reduce((acc, prod) => acc + prod.price * prod.cantidad, 0);
   const descuentoAplicado = usuario ? (subtotal * descuento / 100) : 0;
@@ -19,13 +22,43 @@ const MetodoPago = () => {
   const handleSeleccionMetodo = (metodo) => {
     setMetodoPago(metodo);
     setMostrarDatosTransferencia(metodo === 'transferencia');
+    setError('');
+  };
+  
+  const procesarPagoWebpay = async () => {
+    setProcesando(true);
+    setError('');
+    
+    try { //SE OBTIENE ERROR Error al iniciar transacción: ReferenceError: Cannot access 'response' before initialization at procesarPagoWebpay (MetodoPago.jsx:34:1) at handleFinalizarCompra (MetodoPago.jsx:57:1)
+      // Llamamos al endpoint para crear la transacción
+      const response = await axios.post('http://localhost:5000/create-transaction', {
+        amount: Math.round(total), // Transbank requiere montos enteros
+        sessionId: usuario ? usuario.id.toString() : 'guest-session',
+      });
+
+      if (response.data.success) {
+        // Redirigimos al usuario a la página de pago de Webpay
+        window.location.href = response.data.url;
+      } else {
+        setError('No se pudo iniciar la transacción con Webpay');
+        setProcesando(false);
+      }
+    } catch (err) {
+      console.error('Error al iniciar transacción:', err);
+      setError('Error al conectar con el servicio de pago');
+      setProcesando(false);
+    }
   };
   
   const handleFinalizarCompra = () => {
-    // Aquí iría la lógica para procesar la compra
-    alert(`Compra finalizada con éxito mediante ${metodoPago}`);
-    vaciarCarrito();
-    navigate('/');
+    if (metodoPago === 'tarjeta') {
+      procesarPagoWebpay();
+    } else if (metodoPago === 'transferencia') {
+      // Simulamos finalización para transferencia
+      alert('¡Gracias por tu compra! Por favor realiza la transferencia según las instrucciones.');
+      vaciarCarrito();
+      navigate('/');
+    }
   };
   
   const handleVolver = () => {
@@ -50,10 +83,10 @@ const MetodoPago = () => {
           >
             <div className="card-body">
               <h5 className="card-title d-flex justify-content-between">
-                <span>Pagar con tarjeta</span>
+                <span>Pagar con tarjeta (Webpay)</span>
                 {metodoPago === 'tarjeta' && <span className="text-primary">✓</span>}
               </h5>
-              <p className="card-text">Paga con tarjeta de crédito o débito</p>
+              <p className="card-text">Paga con tarjeta de crédito o débito a través de Webpay</p>
             </div>
           </div>
         </div>
@@ -89,6 +122,12 @@ const MetodoPago = () => {
         </div>
       )}
       
+      {error && (
+        <div className="alert alert-danger mb-4">
+          {error}
+        </div>
+      )}
+      
       <div className="card mb-4">
         <div className="card-body">
           <h5 className="card-title">Resumen del pedido</h5>
@@ -113,15 +152,19 @@ const MetodoPago = () => {
       </div>
       
       <div className="d-flex justify-content-between">
-        <button className="btn btn-secondary" onClick={handleVolver}>
+        <button 
+          className="btn btn-secondary" 
+          onClick={handleVolver}
+          disabled={procesando}
+        >
           Volver al carrito
         </button>
         <button 
           className="btn btn-success" 
-          disabled={!metodoPago} 
+          disabled={!metodoPago || procesando} 
           onClick={handleFinalizarCompra}
         >
-          Finalizar compra
+          {procesando ? 'Procesando...' : 'Finalizar compra'}
         </button>
       </div>
     </div>
