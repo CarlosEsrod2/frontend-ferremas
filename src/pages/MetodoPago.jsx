@@ -32,21 +32,21 @@ const MetodoPago = () => {
     try {
       // Llamamos al endpoint para crear la transacción
       const response = await axios.post('http://localhost:5000/crear-transaccion', {
-        amount: Math.round(total), // Transbank requiere montos enteros
-        //sessionId: usuario ? usuario.id.toString() : 'guest-session',
-        
+        amount: Math.round(total) // Transbank requiere montos enteros
       });
 
-      if (response.data.success) {
+      // Verificamos si la respuesta contiene los datos esperados
+      if (response.data && response.data.success && response.data.url) {
         // Redirigimos al usuario a la página de pago de Webpay
-        window.location.href = response.data.url; //esto proboca error GET /<Response%20151%20bytes%20[200%20OK]> HTTP/1.1" 404
+        window.location.href = response.data.url;
       } else {
-        setError('No se pudo iniciar la transacción con Webpay');
+        setError('No se pudo iniciar la transacción con Webpay. Datos incompletos en la respuesta.');
         setProcesando(false);
       }
     } catch (err) {
       console.error('Error al iniciar transacción:', err);
-      setError('Error al conectar con el servicio de pago');
+      setError('Error al conectar con el servicio de pago: ' + 
+        (err.response?.data?.error || err.message || 'Error desconocido'));
       setProcesando(false);
     }
   };
