@@ -39,7 +39,7 @@ const Categoria = () => {
         <div>
             <h2 className="mb-4">{categorias[typeId] || 'Categoría'} - Productos</h2>
             {loading ? (
-                <p>Cargando productos...</p>
+                <p>Cargando productos... esto puede tardar</p>
             ) : productos.length === 0 ? (
                 <p>No hay productos en esta categoría.</p>
             ) : (
