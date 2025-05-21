@@ -29,16 +29,17 @@ const MetodoPago = () => {
     setProcesando(true);
     setError('');
     
-    try { //SE OBTIENE ERROR Error al iniciar transacción: ReferenceError: Cannot access 'response' before initialization at procesarPagoWebpay (MetodoPago.jsx:34:1) at handleFinalizarCompra (MetodoPago.jsx:57:1)
+    try {
       // Llamamos al endpoint para crear la transacción
-      const response = await axios.post('http://localhost:5000/create-transaction', {
+      const response = await axios.post('http://localhost:5000/crear-transaccion', {
         amount: Math.round(total), // Transbank requiere montos enteros
-        sessionId: usuario ? usuario.id.toString() : 'guest-session',
+        //sessionId: usuario ? usuario.id.toString() : 'guest-session',
+        
       });
 
       if (response.data.success) {
         // Redirigimos al usuario a la página de pago de Webpay
-        window.location.href = response.data.url;
+        window.location.href = response.data.url; //esto proboca error GET /<Response%20151%20bytes%20[200%20OK]> HTTP/1.1" 404
       } else {
         setError('No se pudo iniciar la transacción con Webpay');
         setProcesando(false);
