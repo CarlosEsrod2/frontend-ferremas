@@ -1,5 +1,5 @@
 // src/pages/PaymentResult.jsx
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CarritoContext } from '../context/CarritoContext';
 
@@ -9,13 +9,15 @@ const PaymentResult = () => {
   const orderNumber = searchParams.get('order');
   const navigate = useNavigate();
   const { vaciarCarrito } = useContext(CarritoContext);
+  const [carritoVaciado, setCarritoVaciado] = useState(false);
 
   useEffect(() => {
-    // Si el pago fue exitoso, vaciar el carrito
-    if (status === 'success') {
+    // Si el pago fue exitoso y aún no hemos vaciado el carrito, vaciarlo
+    if (status === 'success' && !carritoVaciado) {
       vaciarCarrito();
+      setCarritoVaciado(true); // Marcamos que ya vaciamos el carrito
     }
-  }, [status, vaciarCarrito]);
+  }, [status, vaciarCarrito, carritoVaciado]);
 
   const handleGoHome = () => {
     navigate('/');
