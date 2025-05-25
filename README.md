@@ -15,8 +15,7 @@ diversidad y calidad en sus productos.
 - **Carrito de compra**: Gestión sencilla de productos seleccionados
 - **Sistema de usuarios**: Registro e inicio de sesión con beneficios exclusivos
 - **Descuentos para usuarios**: 10% de descuento para usuarios registrados
-- **Múltiples métodos de pago**: Integración con Webpay y transferencia bancaria
-- **Diseño responsive**: Experiencia optimizada en todos los dispositivos
+- **Múltiples métodos de pago**: Integración con Webpay y datos de transferencia bancaria
 
 ## Tecnologías utilizadas 🚀
 
